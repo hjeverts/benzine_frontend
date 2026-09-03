@@ -1,0 +1,78 @@
+<div class="page" *ngIf="vehicle() as v">
+  <a routerLink="/vehicles">&larr; Terug naar voertuigen</a>
+  <h1>{{ v.naam }}</h1>
+  <p>{{ v.merk }} {{ v.type }}</p>
+
+  @if (stats(); as s) {
+    <section class="stats">
+      <div><strong>{{ s.totaleKosten | number: '1.2-2' }}</strong><span>Totale kosten (&euro;)</span></div>
+      <div><strong>{{ s.totaalLiters | number: '1.1-1' }}</strong><span>Totaal getankt (L)</span></div>
+      <div><strong>{{ s.gemiddeldeVerbruikL100km | number: '1.1-1' }}</strong><span>L/100km</span></div>
+      <div><strong>{{ s.gemiddeldePrijsPerLiter | number: '1.3-3' }}</strong><span>&euro;/L gemiddeld</span></div>
+      <div><strong>{{ s.laatsteOdometer }}</strong><span>Laatste km-stand</span></div>
+    </section>
+  }
+
+  <section>
+    <h2>Tankbeurten</h2>
+    <form (ngSubmit)="addFuelEntry()" class="entry-form">
+      <input type="date" name="datum" [(ngModel)]="newFuelEntry.datum" required />
+      <input type="number" name="odometer" [(ngModel)]="newFuelEntry.odometer" placeholder="Km-stand" required />
+      <input type="number" step="0.01" name="volume" [(ngModel)]="newFuelEntry.volume" placeholder="Liters" required />
+      <input type="number" step="0.01" name="bedrag" [(ngModel)]="newFuelEntry.bedrag" placeholder="Bedrag (€)" required />
+      <input type="text" name="tankstation" [(ngModel)]="newFuelEntry.tankstation" placeholder="Tankstation" />
+      <button type="submit">Toevoegen</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr><th>Datum</th><th>Km-stand</th><th>Liters</th><th>Bedrag</th><th>Tankstation</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (entry of fuelEntries(); track entry.id) {
+          <tr>
+            <td>{{ entry.datum }}</td>
+            <td>{{ entry.odometer }}</td>
+            <td>{{ entry.volume }}</td>
+            <td>{{ entry.bedrag | number: '1.2-2' }}</td>
+            <td>{{ entry.tankstation }}</td>
+            <td><button (click)="deleteFuelEntry(entry.id)">×</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Onderhoud</h2>
+    <form (ngSubmit)="addMaintenanceEntry()" class="entry-form">
+      <input type="date" name="odatum" [(ngModel)]="newMaintenanceEntry.datum" required />
+      <input type="number" name="oodometer" [(ngModel)]="newMaintenanceEntry.odometer" placeholder="Km-stand" required />
+      <select name="type" [(ngModel)]="newMaintenanceEntry.maintenanceTypeId" required>
+        <option [value]="0" disabled>Kies type</option>
+        @for (type of maintenanceTypes(); track type.id) {
+          <option [value]="type.id">{{ type.naam }}</option>
+        }
+      </select>
+      <input type="text" name="notitie" [(ngModel)]="newMaintenanceEntry.notitie" placeholder="Notitie" />
+      <button type="submit">Toevoegen</button>
+    </form>
+
+    <table>
+      <thead>
+        <tr><th>Datum</th><th>Km-stand</th><th>Type</th><th>Notitie</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (entry of maintenanceEntries(); track entry.id) {
+          <tr>
+            <td>{{ entry.datum }}</td>
+            <td>{{ entry.odometer }}</td>
+            <td>{{ entry.maintenanceTypeNaam }}</td>
+            <td>{{ entry.notitie }}</td>
+            <td><button (click)="deleteMaintenanceEntry(entry.id)">×</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </section>
+</div>

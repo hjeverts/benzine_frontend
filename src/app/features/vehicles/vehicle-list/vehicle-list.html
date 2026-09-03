@@ -1,0 +1,36 @@
+<div class="page">
+  <header class="page-header">
+    <h1>Mijn voertuigen</h1>
+    <div>
+      <span>{{ authService.currentUser()?.name }}</span>
+      <button (click)="logout()">Uitloggen</button>
+    </div>
+  </header>
+
+  <ul class="vehicle-grid">
+    @for (vehicle of vehicles(); track vehicle.id) {
+      <li class="vehicle-card">
+        <a [routerLink]="['/vehicles', vehicle.id]">
+          <h3>{{ vehicle.naam }}</h3>
+          <p>{{ vehicle.merk }} {{ vehicle.type }} @if (vehicle.bouwjaar) { ({{ vehicle.bouwjaar }}) }</p>
+        </a>
+        <button (click)="deleteVehicle(vehicle.id)">Verwijderen</button>
+      </li>
+    } @empty {
+      <p>Nog geen voertuigen. Voeg er hieronder een toe.</p>
+    }
+  </ul>
+
+  @if (showForm()) {
+    <form (ngSubmit)="addVehicle()" class="vehicle-form">
+      <label>Naam <input name="naam" [(ngModel)]="newVehicle.naam" required /></label>
+      <label>Merk <input name="merk" [(ngModel)]="newVehicle.merk" /></label>
+      <label>Type <input name="type" [(ngModel)]="newVehicle.type" /></label>
+      <label>Bouwjaar <input type="number" name="bouwjaar" [(ngModel)]="newVehicle.bouwjaar" /></label>
+      <button type="submit">Opslaan</button>
+      <button type="button" (click)="showForm.set(false)">Annuleren</button>
+    </form>
+  } @else {
+    <button (click)="showForm.set(true)">+ Voertuig toevoegen</button>
+  }
+</div>

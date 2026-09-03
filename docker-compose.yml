@@ -1,0 +1,11 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    # Verwacht dat het 'benzine_backend' netwerk/compose de 'api'-service levert,
+    # of koppel dit via een extern gedeeld Docker-netwerk (zie root-README voor de
+    # volledige stack met postgres + api + frontend samen).

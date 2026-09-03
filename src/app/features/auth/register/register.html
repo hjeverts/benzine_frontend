@@ -1,0 +1,30 @@
+<div class="auth-container">
+  <h1>Account aanmaken</h1>
+
+  <form (ngSubmit)="submit()" #registerForm="ngForm">
+    <label>
+      Naam
+      <input type="text" name="name" [(ngModel)]="name" required autocomplete="name" />
+    </label>
+
+    <label>
+      E-mailadres
+      <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" />
+    </label>
+
+    <label>
+      Wachtwoord
+      <input type="password" name="password" [(ngModel)]="password" required minlength="8" autocomplete="new-password" />
+    </label>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <button type="submit" [disabled]="registerForm.invalid || loading()">
+      {{ loading() ? 'Bezig...' : 'Account aanmaken' }}
+    </button>
+  </form>
+
+  <p>Al een account? <a routerLink="/login">Log hier in</a></p>
+</div>
