@@ -2,6 +2,9 @@
   <a routerLink="/vehicles">&larr; Terug naar voertuigen</a>
   <h1>{{ v.naam }}</h1>
   <p>{{ v.merk }} {{ v.type }}</p>
+  @if (!v.isOwner) {
+    <p class="shared-badge">Gedeeld door {{ v.eigenaarNaam }}</p>
+  }
 
   @if (stats(); as s) {
     <section class="stats">
@@ -75,4 +78,28 @@
       </tbody>
     </table>
   </section>
+
+  @if (v.isOwner) {
+    <section>
+      <h2>Delen</h2>
+      <p>Deel dit voertuig met een 2e account (bv. je partner). Diegene moet eerst zelf een account aanmaken via de registratiepagina.</p>
+      <form (ngSubmit)="addShare()" class="entry-form">
+        <input type="email" name="shareEmail" [(ngModel)]="newShareEmail" placeholder="E-mailadres" required />
+        <button type="submit">Delen</button>
+      </form>
+      @if (shareError(); as err) {
+        <p class="error">{{ err }}</p>
+      }
+      <ul class="share-list">
+        @for (share of shares(); track share.userId) {
+          <li>
+            {{ share.name }} ({{ share.email }})
+            <button (click)="removeShare(share.userId)">Verwijderen</button>
+          </li>
+        } @empty {
+          <li>Nog niet gedeeld met een ander account.</li>
+        }
+      </ul>
+    </section>
+  }
 </div>

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Vehicle, VehicleRequest, VehicleStats } from '../models/models';
+import { Vehicle, VehicleRequest, VehicleShare, VehicleStats } from '../models/models';
 
 @Injectable({ providedIn: 'root' })
 export class VehicleService {
@@ -32,5 +32,17 @@ export class VehicleService {
 
   getStats(id: number): Observable<VehicleStats> {
     return this.http.get<VehicleStats>(`${this.baseUrl}/${id}/stats`);
+  }
+
+  getShares(vehicleId: number): Observable<VehicleShare[]> {
+    return this.http.get<VehicleShare[]>(`${this.baseUrl}/${vehicleId}/shares`);
+  }
+
+  addShare(vehicleId: number, email: string): Observable<VehicleShare> {
+    return this.http.post<VehicleShare>(`${this.baseUrl}/${vehicleId}/shares`, { email });
+  }
+
+  removeShare(vehicleId: number, userId: string): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/${vehicleId}/shares/${userId}`);
   }
 }

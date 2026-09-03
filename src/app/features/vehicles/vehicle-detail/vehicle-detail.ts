@@ -12,6 +12,7 @@ import {
   MaintenanceEntryRequest,
   MaintenanceType,
   Vehicle,
+  VehicleShare,
   VehicleStats,
 } from '../../../core/models/models';
 
@@ -29,6 +30,9 @@ export class VehicleDetail implements OnInit {
   readonly fuelEntries = signal<FuelEntry[]>([]);
   readonly maintenanceEntries = signal<MaintenanceEntry[]>([]);
   readonly maintenanceTypes = signal<MaintenanceType[]>([]);
+  readonly shares = signal<VehicleShare[]>([]);
+  readonly shareError = signal<string | null>(null);
+  newShareEmail = '';
 
   newFuelEntry: FuelEntryRequest = {
     datum: new Date().toISOString().slice(0, 10),
@@ -61,7 +65,12 @@ export class VehicleDetail implements OnInit {
   }
 
   load(): void {
-    this.vehicleService.getById(this.vehicleId).subscribe((v) => this.vehicle.set(v));
+    this.vehicleService.getById(this.vehicleId).subscribe((v) => {
+      this.vehicle.set(v);
+      if (v.isOwner) {
+        this.vehicleService.getShares(this.vehicleId).subscribe((shares) => this.shares.set(shares));
+      }
+    });
     this.vehicleService.getStats(this.vehicleId).subscribe((s) => this.stats.set(s));
     this.fuelEntryService.getAll(this.vehicleId).subscribe((entries) => this.fuelEntries.set(entries));
     this.maintenanceService.getAll(this.vehicleId).subscribe((entries) => this.maintenanceEntries.set(entries));
@@ -101,5 +110,25 @@ export class VehicleDetail implements OnInit {
 
   deleteMaintenanceEntry(id: number): void {
     this.maintenanceService.delete(this.vehicleId, id).subscribe(() => this.load());
+  }
+
+  addShare(): void {
+    if (!this.newShareEmail.trim()) return;
+    this.shareError.set(null);
+    this.vehicleService.addShare(this.vehicleId, this.newShareEmail.trim()).subscribe({
+      next: (share) => {
+        this.shares.update((shares) => [...shares, share]);
+        this.newShareEmail = '';
+      },
+      error: (err) => {
+        this.shareError.set(err?.error ?? 'Kon dit voertuig niet delen. Controleer het e-mailadres.');
+      },
+    });
+  }
+
+  removeShare(userId: string): void {
+    this.vehicleService.removeShare(this.vehicleId, userId).subscribe(() => {
+      this.shares.update((shares) => shares.filter((s) => s.userId !== userId));
+    });
   }
 }

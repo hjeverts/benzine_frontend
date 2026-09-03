@@ -5,9 +5,18 @@ export interface Vehicle {
   type?: string;
   bouwjaar?: number;
   aankoopdatum?: string;
+  isOwner: boolean;
+  eigenaarNaam: string;
 }
 
-export type VehicleRequest = Omit<Vehicle, 'id'>;
+export type VehicleRequest = Omit<Vehicle, 'id' | 'isOwner' | 'eigenaarNaam'>;
+
+export interface VehicleShare {
+  userId: string;
+  email: string;
+  name: string;
+  createdAt: string;
+}
 
 export interface FuelEntry {
   id: number;

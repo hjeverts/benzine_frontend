@@ -13,8 +13,13 @@
         <a [routerLink]="['/vehicles', vehicle.id]">
           <h3>{{ vehicle.naam }}</h3>
           <p>{{ vehicle.merk }} {{ vehicle.type }} @if (vehicle.bouwjaar) { ({{ vehicle.bouwjaar }}) }</p>
+          @if (!vehicle.isOwner) {
+            <p class="shared-badge">Gedeeld door {{ vehicle.eigenaarNaam }}</p>
+          }
         </a>
-        <button (click)="deleteVehicle(vehicle.id)">Verwijderen</button>
+        @if (vehicle.isOwner) {
+          <button (click)="deleteVehicle(vehicle.id)">Verwijderen</button>
+        }
       </li>
     } @empty {
       <p>Nog geen voertuigen. Voeg er hieronder een toe.</p>
