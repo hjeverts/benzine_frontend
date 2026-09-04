@@ -30,6 +30,39 @@
   }
 }
 
+.checkbox-label {
+  flex-direction: row !important;
+  align-items: center;
+  max-width: 20rem;
+
+  input {
+    margin: 0;
+  }
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.chart-card {
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  padding: 1rem;
+
+  h2 {
+    margin-top: 0;
+    font-size: 1.1rem;
+  }
+}
+
+.chart-container {
+  height: 18rem;
+  position: relative;
+}
+
 .share-list {
   list-style: none;
   padding: 0;

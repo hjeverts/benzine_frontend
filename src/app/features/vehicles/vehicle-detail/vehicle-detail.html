@@ -16,6 +16,27 @@
     </section>
   }
 
+  <section class="charts">
+    <article class="chart-card">
+      <h2>Verbruikstrend</h2>
+      <div class="chart-container">
+        <canvas baseChart type="line" [data]="consumptionChartData()" [options]="lineChartOptions"></canvas>
+      </div>
+    </article>
+    <article class="chart-card">
+      <h2>Brandstofprijs</h2>
+      <div class="chart-container">
+        <canvas baseChart type="line" [data]="fuelPriceChartData()" [options]="lineChartOptions"></canvas>
+      </div>
+    </article>
+    <article class="chart-card">
+      <h2>Kosten per tankbeurt</h2>
+      <div class="chart-container">
+        <canvas baseChart type="bar" [data]="fuelCostChartData()" [options]="barChartOptions"></canvas>
+      </div>
+    </article>
+  </section>
+
   <section>
     <h2>Tankbeurten</h2>
     <form (ngSubmit)="addFuelEntry()" class="entry-form">
@@ -39,12 +60,16 @@
         <span>Tankstation</span>
         <input type="text" name="tankstation" [(ngModel)]="newFuelEntry.tankstation" />
       </label>
+      <label class="checkbox-label">
+        <input type="checkbox" name="vergeten" [(ngModel)]="newFuelEntry.vergeten" />
+        <span>Sinds de vorige registratie is een tankbeurt vergeten</span>
+      </label>
       <button type="submit">Toevoegen</button>
     </form>
 
     <table>
       <thead>
-        <tr><th>Datum</th><th>Km-stand</th><th>Liters</th><th>Bedrag</th><th>L/100km</th><th>Tankstation</th><th></th></tr>
+        <tr><th>Datum</th><th>Km-stand</th><th>Liters</th><th>Bedrag</th><th>Afstand (km)</th><th>L/100km</th><th>Tankstation</th><th></th></tr>
       </thead>
       <tbody>
         @for (entry of fuelEntriesWithVerbruik(); track entry.id) {
@@ -53,6 +78,7 @@
             <td>{{ entry.odometer }}</td>
             <td>{{ entry.volume }}</td>
             <td>{{ entry.bedrag | number: '1.2-2' }}</td>
+            <td>{{ entry.afstandKm ?? '–' }}</td>
             <td>{{ entry.verbruikL100km !== null ? (entry.verbruikL100km | number: '1.1-1') : '–' }}</td>
             <td>{{ entry.tankstation }}</td>
             <td><button (click)="deleteFuelEntry(entry.id)">×</button></td>
