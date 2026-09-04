@@ -7,6 +7,7 @@ export interface Vehicle {
   aankoopdatum?: string;
   isOwner: boolean;
   eigenaarNaam: string;
+  fotoDataUrl?: string;
 }
 
 export type VehicleRequest = Omit<Vehicle, 'id' | 'isOwner' | 'eigenaarNaam'>;

@@ -5,6 +5,26 @@
   @if (!v.isOwner) {
     <p class="shared-badge">Gedeeld door {{ v.eigenaarNaam }}</p>
   }
+  @if (v.isOwner) {
+    <section class="vehicle-settings">
+      <h2>Voertuiggegevens</h2>
+      @if (v.fotoDataUrl; as photo) {
+        <img class="vehicle-photo" [src]="photo" [alt]="'Foto van ' + v.naam" />
+      }
+      <label>Voertuigfoto <input type="file" accept="image/jpeg,image/png,image/webp" (change)="uploadVehiclePhoto($event)" /></label>
+      <p>JPEG, PNG of WebP, maximaal 2 MB.</p>
+      <form (ngSubmit)="saveVehicle()" class="entry-form">
+        <label><span>Naam</span><input name="vehicleName" [(ngModel)]="editVehicle.naam" required /></label>
+        <label><span>Merk</span><input name="vehicleBrand" [(ngModel)]="editVehicle.merk" /></label>
+        <label><span>Type</span><input name="vehicleType" [(ngModel)]="editVehicle.type" /></label>
+        <label><span>Bouwjaar</span><input type="number" name="vehicleYear" [(ngModel)]="editVehicle.bouwjaar" /></label>
+        <label><span>Aankoopdatum</span><input type="date" name="vehiclePurchaseDate" [(ngModel)]="editVehicle.aankoopdatum" /></label>
+        <button type="submit">Opslaan</button>
+      </form>
+      @if (vehicleMessage(); as text) { <p class="message">{{ text }}</p> }
+      @if (vehicleError(); as text) { <p class="error">{{ text }}</p> }
+    </section>
+  }
 
   @if (stats(); as s) {
     <section class="stats">

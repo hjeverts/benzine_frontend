@@ -14,6 +14,7 @@ import {
   MaintenanceEntryRequest,
   MaintenanceType,
   Vehicle,
+  VehicleRequest,
   VehicleShare,
   VehicleStats,
 } from '../../../core/models/models';
@@ -111,7 +112,10 @@ export class VehicleDetail implements OnInit {
   readonly maintenanceTypes = signal<MaintenanceType[]>([]);
   readonly shares = signal<VehicleShare[]>([]);
   readonly shareError = signal<string | null>(null);
+  readonly vehicleError = signal<string | null>(null);
+  readonly vehicleMessage = signal<string | null>(null);
   newShareEmail = '';
+  editVehicle: VehicleRequest = { naam: '', merk: '', type: '', bouwjaar: undefined, aankoopdatum: undefined };
 
   newFuelEntry: FuelEntryRequest = {
     datum: new Date().toISOString().slice(0, 10),
@@ -146,6 +150,13 @@ export class VehicleDetail implements OnInit {
   load(): void {
     this.vehicleService.getById(this.vehicleId).subscribe((v) => {
       this.vehicle.set(v);
+      this.editVehicle = {
+        naam: v.naam,
+        merk: v.merk ?? '',
+        type: v.type ?? '',
+        bouwjaar: v.bouwjaar,
+        aankoopdatum: v.aankoopdatum,
+      };
       if (v.isOwner) {
         this.vehicleService.getShares(this.vehicleId).subscribe((shares) => this.shares.set(shares));
       }
@@ -208,6 +219,32 @@ export class VehicleDetail implements OnInit {
   removeShare(userId: string): void {
     this.vehicleService.removeShare(this.vehicleId, userId).subscribe(() => {
       this.shares.update((shares) => shares.filter((s) => s.userId !== userId));
+    });
+  }
+
+  saveVehicle(): void {
+    this.vehicleError.set(null);
+    this.vehicleMessage.set(null);
+    this.vehicleService.update(this.vehicleId, this.editVehicle).subscribe({
+      next: () => {
+        this.vehicleMessage.set('Voertuiggegevens opgeslagen.');
+        this.load();
+      },
+      error: (err) => this.vehicleError.set(err.error ?? 'Voertuiggegevens opslaan mislukt.'),
+    });
+  }
+
+  uploadVehiclePhoto(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    this.vehicleError.set(null);
+    this.vehicleMessage.set(null);
+    this.vehicleService.updatePhoto(this.vehicleId, file).subscribe({
+      next: (vehicle) => {
+        this.vehicle.set(vehicle);
+        this.vehicleMessage.set('Voertuigfoto bijgewerkt.');
+      },
+      error: (err) => this.vehicleError.set(err.error ?? 'Voertuigfoto uploaden mislukt.'),
     });
   }
 

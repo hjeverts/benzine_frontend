@@ -2,7 +2,11 @@
   <header class="page-header">
     <h1>Mijn voertuigen</h1>
     <div>
+      @if (authService.currentUser()?.avatarDataUrl; as avatar) {
+        <img class="header-avatar" [src]="avatar" alt="" />
+      }
       <span>{{ authService.currentUser()?.name }}</span>
+      <a routerLink="/profile">Profiel</a>
       <button (click)="logout()">Uitloggen</button>
     </div>
   </header>
@@ -11,6 +15,9 @@
     @for (vehicle of vehicles(); track vehicle.id) {
       <li class="vehicle-card">
         <a [routerLink]="['/vehicles', vehicle.id]">
+          @if (vehicle.fotoDataUrl; as photo) {
+            <img class="vehicle-photo" [src]="photo" [alt]="'Foto van ' + vehicle.naam" />
+          }
           <h3>{{ vehicle.naam }}</h3>
           <p>{{ vehicle.merk }} {{ vehicle.type }} @if (vehicle.bouwjaar) { ({{ vehicle.bouwjaar }}) }</p>
           @if (!vehicle.isOwner) {

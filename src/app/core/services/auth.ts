@@ -7,7 +7,16 @@ export interface AuthResponse {
   token: string;
   email: string;
   name: string;
+  avatarDataUrl?: string;
 }
+
+export interface CurrentUser {
+  email: string;
+  name: string;
+  avatarDataUrl?: string;
+}
+
+export interface ProfileResponse extends CurrentUser {}
 
 const TOKEN_KEY = 'benzine_token';
 const USER_KEY = 'benzine_user';
@@ -15,7 +24,7 @@ const USER_KEY = 'benzine_user';
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   // Signal zodat components reactief kunnen tonen of iemand ingelogd is.
-  readonly currentUser = signal<{ email: string; name: string } | null>(this.loadStoredUser());
+  readonly currentUser = signal<CurrentUser | null>(this.loadStoredUser());
 
   constructor(private http: HttpClient) {}
 
@@ -29,6 +38,28 @@ export class AuthService {
     return this.http
       .post<AuthResponse>(`${environment.apiUrl}/auth/login`, { email, password })
       .pipe(tap((res) => this.storeSession(res)));
+  }
+
+  getProfile(): Observable<ProfileResponse> {
+    return this.http.get<ProfileResponse>(`${environment.apiUrl}/auth/profile`);
+  }
+
+  updateProfile(email: string, name: string): Observable<AuthResponse> {
+    return this.http
+      .put<AuthResponse>(`${environment.apiUrl}/auth/profile`, { email, name })
+      .pipe(tap((res) => this.storeSession(res)));
+  }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<void> {
+    return this.http.put<void>(`${environment.apiUrl}/auth/profile/password`, { currentPassword, newPassword });
+  }
+
+  updateAvatar(file: File): Observable<ProfileResponse> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.put<ProfileResponse>(`${environment.apiUrl}/auth/profile/avatar`, formData).pipe(
+      tap((profile) => this.updateCurrentUser(profile)),
+    );
   }
 
   logout(): void {
@@ -47,11 +78,17 @@ export class AuthService {
 
   private storeSession(res: AuthResponse): void {
     localStorage.setItem(TOKEN_KEY, res.token);
-    localStorage.setItem(USER_KEY, JSON.stringify({ email: res.email, name: res.name }));
-    this.currentUser.set({ email: res.email, name: res.name });
+    const user = { email: res.email, name: res.name, avatarDataUrl: res.avatarDataUrl };
+    localStorage.setItem(USER_KEY, JSON.stringify(user));
+    this.currentUser.set(user);
   }
 
-  private loadStoredUser(): { email: string; name: string } | null {
+  private updateCurrentUser(profile: ProfileResponse): void {
+    localStorage.setItem(USER_KEY, JSON.stringify(profile));
+    this.currentUser.set(profile);
+  }
+
+  private loadStoredUser(): CurrentUser | null {
     const raw = localStorage.getItem(USER_KEY);
     return raw ? JSON.parse(raw) : null;
   }

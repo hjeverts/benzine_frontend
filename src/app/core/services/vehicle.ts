@@ -30,6 +30,12 @@ export class VehicleService {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 
+  updatePhoto(id: number, file: File): Observable<Vehicle> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http.put<Vehicle>(`${this.baseUrl}/${id}/photo`, formData);
+  }
+
   getStats(id: number): Observable<VehicleStats> {
     return this.http.get<VehicleStats>(`${this.baseUrl}/${id}/stats`);
   }

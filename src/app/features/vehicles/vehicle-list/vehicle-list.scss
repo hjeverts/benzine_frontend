@@ -28,3 +28,19 @@
     cursor: pointer;
   }
 }
+
+.header-avatar {
+  width: 2rem;
+  height: 2rem;
+  margin-right: .5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+}
+
+.vehicle-photo {
+  width: 100%;
+  max-height: 10rem;
+  border-radius: .4rem;
+  object-fit: cover;
+}

@@ -1,0 +1,34 @@
+<div class="page">
+  <a routerLink="/vehicles">&larr; Terug naar voertuigen</a>
+  <h1>Mijn profiel</h1>
+
+  <section>
+    <h2>Profielfoto</h2>
+    @if (authService.currentUser()?.avatarDataUrl; as avatar) {
+      <img class="avatar" [src]="avatar" alt="Profielfoto" />
+    }
+    <input type="file" accept="image/jpeg,image/png,image/webp" (change)="uploadAvatar($event)" />
+    <p>JPEG, PNG of WebP, maximaal 2 MB.</p>
+  </section>
+
+  <section>
+    <h2>Gegevens</h2>
+    <form (ngSubmit)="saveProfile()">
+      <label>Naam <input name="name" [(ngModel)]="name" required autocomplete="name" /></label>
+      <label>E-mailadres <input type="email" name="email" [(ngModel)]="email" required autocomplete="email" /></label>
+      <button type="submit">Profiel opslaan</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Wachtwoord wijzigen</h2>
+    <form (ngSubmit)="changePassword()">
+      <label>Huidig wachtwoord <input type="password" name="currentPassword" [(ngModel)]="currentPassword" required autocomplete="current-password" /></label>
+      <label>Nieuw wachtwoord <input type="password" name="newPassword" [(ngModel)]="newPassword" required minlength="8" autocomplete="new-password" /></label>
+      <button type="submit">Wachtwoord wijzigen</button>
+    </form>
+  </section>
+
+  @if (message(); as text) { <p class="message">{{ text }}</p> }
+  @if (error(); as text) { <p class="error">{{ text }}</p> }
+</div>
