@@ -24,6 +24,14 @@
     font-size: 1rem;
   }
 
+  input[type='date'] {
+    min-width: 10.5rem;
+    appearance: auto;
+    -webkit-appearance: auto;
+    background-color: #fff;
+    color: #000;
+  }
+
   button {
     padding: 0.5rem 0.75rem;
     cursor: pointer;
