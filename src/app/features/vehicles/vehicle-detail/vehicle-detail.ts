@@ -32,6 +32,7 @@ type FuelEntryWithVerbruik = FuelEntry & {
 })
 export class VehicleDetail implements OnInit {
   vehicleId!: number;
+  readonly fuelTypes = ['Benzine', 'Diesel', 'LPG', 'Elektrisch', 'Hybride'];
   readonly vehicle = signal<Vehicle | null>(null);
   readonly stats = signal<VehicleStats | null>(null);
   readonly fuelEntries = signal<FuelEntry[]>([]);
