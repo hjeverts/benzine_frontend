@@ -19,25 +19,41 @@
   <section>
     <h2>Tankbeurten</h2>
     <form (ngSubmit)="addFuelEntry()" class="entry-form">
-      <input type="date" name="datum" [(ngModel)]="newFuelEntry.datum" required />
-      <input type="number" name="odometer" [(ngModel)]="newFuelEntry.odometer" placeholder="Km-stand" required />
-      <input type="number" step="0.01" name="volume" [(ngModel)]="newFuelEntry.volume" placeholder="Liters" required />
-      <input type="number" step="0.01" name="bedrag" [(ngModel)]="newFuelEntry.bedrag" placeholder="Bedrag (€)" required />
-      <input type="text" name="tankstation" [(ngModel)]="newFuelEntry.tankstation" placeholder="Tankstation" />
+      <label>
+        <span>Datum</span>
+        <input type="date" name="datum" [(ngModel)]="newFuelEntry.datum" required />
+      </label>
+      <label>
+        <span>Km-stand</span>
+        <input type="number" name="odometer" [(ngModel)]="newFuelEntry.odometer" required />
+      </label>
+      <label>
+        <span>Liters</span>
+        <input type="number" step="0.01" name="volume" [(ngModel)]="newFuelEntry.volume" required />
+      </label>
+      <label>
+        <span>Bedrag (&euro;)</span>
+        <input type="number" step="0.01" name="bedrag" [(ngModel)]="newFuelEntry.bedrag" required />
+      </label>
+      <label>
+        <span>Tankstation</span>
+        <input type="text" name="tankstation" [(ngModel)]="newFuelEntry.tankstation" />
+      </label>
       <button type="submit">Toevoegen</button>
     </form>
 
     <table>
       <thead>
-        <tr><th>Datum</th><th>Km-stand</th><th>Liters</th><th>Bedrag</th><th>Tankstation</th><th></th></tr>
+        <tr><th>Datum</th><th>Km-stand</th><th>Liters</th><th>Bedrag</th><th>L/100km</th><th>Tankstation</th><th></th></tr>
       </thead>
       <tbody>
-        @for (entry of fuelEntries(); track entry.id) {
+        @for (entry of fuelEntriesWithVerbruik(); track entry.id) {
           <tr>
             <td>{{ entry.datum }}</td>
             <td>{{ entry.odometer }}</td>
             <td>{{ entry.volume }}</td>
             <td>{{ entry.bedrag | number: '1.2-2' }}</td>
+            <td>{{ entry.verbruikL100km !== null ? (entry.verbruikL100km | number: '1.1-1') : '–' }}</td>
             <td>{{ entry.tankstation }}</td>
             <td><button (click)="deleteFuelEntry(entry.id)">×</button></td>
           </tr>
@@ -49,15 +65,27 @@
   <section>
     <h2>Onderhoud</h2>
     <form (ngSubmit)="addMaintenanceEntry()" class="entry-form">
-      <input type="date" name="odatum" [(ngModel)]="newMaintenanceEntry.datum" required />
-      <input type="number" name="oodometer" [(ngModel)]="newMaintenanceEntry.odometer" placeholder="Km-stand" required />
-      <select name="type" [(ngModel)]="newMaintenanceEntry.maintenanceTypeId" required>
-        <option [value]="0" disabled>Kies type</option>
-        @for (type of maintenanceTypes(); track type.id) {
-          <option [value]="type.id">{{ type.naam }}</option>
-        }
-      </select>
-      <input type="text" name="notitie" [(ngModel)]="newMaintenanceEntry.notitie" placeholder="Notitie" />
+      <label>
+        <span>Datum</span>
+        <input type="date" name="odatum" [(ngModel)]="newMaintenanceEntry.datum" required />
+      </label>
+      <label>
+        <span>Km-stand</span>
+        <input type="number" name="oodometer" [(ngModel)]="newMaintenanceEntry.odometer" required />
+      </label>
+      <label>
+        <span>Type</span>
+        <select name="type" [(ngModel)]="newMaintenanceEntry.maintenanceTypeId" required>
+          <option [value]="0" disabled>Kies type</option>
+          @for (type of maintenanceTypes(); track type.id) {
+            <option [value]="type.id">{{ type.naam }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        <span>Notitie</span>
+        <input type="text" name="notitie" [(ngModel)]="newMaintenanceEntry.notitie" />
+      </label>
       <button type="submit">Toevoegen</button>
     </form>
 
@@ -84,7 +112,10 @@
       <h2>Delen</h2>
       <p>Deel dit voertuig met een 2e account (bv. je partner). Diegene moet eerst zelf een account aanmaken via de registratiepagina.</p>
       <form (ngSubmit)="addShare()" class="entry-form">
-        <input type="email" name="shareEmail" [(ngModel)]="newShareEmail" placeholder="E-mailadres" required />
+        <label>
+          <span>E-mailadres</span>
+          <input type="email" name="shareEmail" [(ngModel)]="newShareEmail" required />
+        </label>
         <button type="submit">Delen</button>
       </form>
       @if (shareError(); as err) {

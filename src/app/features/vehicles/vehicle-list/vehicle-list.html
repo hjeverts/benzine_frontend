@@ -28,10 +28,10 @@
 
   @if (showForm()) {
     <form (ngSubmit)="addVehicle()" class="vehicle-form">
-      <label>Naam <input name="naam" [(ngModel)]="newVehicle.naam" required /></label>
-      <label>Merk <input name="merk" [(ngModel)]="newVehicle.merk" /></label>
-      <label>Type <input name="type" [(ngModel)]="newVehicle.type" /></label>
-      <label>Bouwjaar <input type="number" name="bouwjaar" [(ngModel)]="newVehicle.bouwjaar" /></label>
+      <label><span>Naam</span><input name="naam" [(ngModel)]="newVehicle.naam" required /></label>
+      <label><span>Merk</span><input name="merk" [(ngModel)]="newVehicle.merk" /></label>
+      <label><span>Type</span><input name="type" [(ngModel)]="newVehicle.type" /></label>
+      <label><span>Bouwjaar</span><input type="number" name="bouwjaar" [(ngModel)]="newVehicle.bouwjaar" /></label>
       <button type="submit">Opslaan</button>
       <button type="button" (click)="showForm.set(false)">Annuleren</button>
     </form>

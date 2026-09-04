@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -28,6 +28,24 @@ export class VehicleDetail implements OnInit {
   readonly vehicle = signal<Vehicle | null>(null);
   readonly stats = signal<VehicleStats | null>(null);
   readonly fuelEntries = signal<FuelEntry[]>([]);
+  // Verbruik (L/100km) per tankbeurt: liters van de huidige beurt gedeeld door de
+  // afstand sinds de vorige tankbeurt (op km-stand gesorteerd). De eerste
+  // tankbeurt (of een vergeten km-stand) heeft geen vorige beurt om mee te
+  // vergelijken en krijgt dus geen verbruik.
+  readonly fuelEntriesWithVerbruik = computed(() => {
+    const entries = this.fuelEntries();
+    const byOdometer = [...entries].sort((a, b) => a.odometer - b.odometer);
+    const verbruikPerId = new Map<number, number | null>();
+    for (let i = 0; i < byOdometer.length; i++) {
+      if (i === 0) {
+        verbruikPerId.set(byOdometer[i].id, null);
+        continue;
+      }
+      const afstand = byOdometer[i].odometer - byOdometer[i - 1].odometer;
+      verbruikPerId.set(byOdometer[i].id, afstand > 0 ? (byOdometer[i].volume / afstand) * 100 : null);
+    }
+    return entries.map((entry) => ({ ...entry, verbruikL100km: verbruikPerId.get(entry.id) ?? null }));
+  });
   readonly maintenanceEntries = signal<MaintenanceEntry[]>([]);
   readonly maintenanceTypes = signal<MaintenanceType[]>([]);
   readonly shares = signal<VehicleShare[]>([]);
