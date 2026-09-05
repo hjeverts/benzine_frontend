@@ -8,12 +8,14 @@ export interface AuthResponse {
   email: string;
   name: string;
   avatarDataUrl?: string;
+  isAdmin: boolean;
 }
 
 export interface CurrentUser {
   email: string;
   name: string;
   avatarDataUrl?: string;
+  isAdmin: boolean;
 }
 
 export interface ProfileResponse extends CurrentUser {}
@@ -90,7 +92,12 @@ export class AuthService {
 
   private storeSession(res: AuthResponse): void {
     localStorage.setItem(TOKEN_KEY, res.token);
-    const user = { email: res.email, name: res.name, avatarDataUrl: res.avatarDataUrl };
+    const user = {
+      email: res.email,
+      name: res.name,
+      avatarDataUrl: res.avatarDataUrl,
+      isAdmin: res.isAdmin,
+    };
     localStorage.setItem(USER_KEY, JSON.stringify(user));
     this.currentUser.set(user);
   }

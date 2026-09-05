@@ -7,6 +7,9 @@
       }
       <span>{{ authService.currentUser()?.name }}</span>
       <a routerLink="/profile">Profiel</a>
+      @if (authService.currentUser()?.isAdmin) {
+        <a routerLink="/admin/users">Gebruikersbeheer</a>
+      }
       <button (click)="logout()">Uitloggen</button>
     </div>
   </header>

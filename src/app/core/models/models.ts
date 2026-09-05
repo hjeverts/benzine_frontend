@@ -61,3 +61,13 @@ export interface VehicleStats {
   gemiddeldePrijsPerLiter: number;
   laatsteOdometer: number;
 }
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  name: string;
+  isAdmin: boolean;
+  createdAt: string;
+}
+
+export type AdminUserUpdate = Pick<AdminUser, 'email' | 'name' | 'isAdmin'>;
