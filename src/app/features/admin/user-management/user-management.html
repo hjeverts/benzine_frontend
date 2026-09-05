@@ -1,0 +1,48 @@
+<div class="page">
+  <a routerLink="/vehicles">&larr; Terug naar voertuigen</a>
+  <header class="management-header">
+    <div>
+      <p class="eyebrow">Beheer</p>
+      <h1>Gebruikers</h1>
+      <p>Beheer accounts en bepaal wie toegang heeft tot gebruikersbeheer.</p>
+    </div>
+    <span class="user-count">{{ users().length }} accounts</span>
+  </header>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <section class="user-list">
+    @for (user of users(); track user.id) {
+      <article class="user-row">
+        @if (editingId() === user.id) {
+          <form (ngSubmit)="save(user)">
+            <label>Naam <input name="name" [(ngModel)]="editUser.name" required /></label>
+            <label>E-mailadres <input type="email" name="email" [(ngModel)]="editUser.email" required /></label>
+            <label class="admin-toggle"><input type="checkbox" name="isAdmin" [(ngModel)]="editUser.isAdmin" /> Beheerder</label>
+            <div class="actions">
+              <button type="submit" [disabled]="saving()">Opslaan</button>
+              <button type="button" class="secondary" (click)="editingId.set(null)">Annuleren</button>
+            </div>
+          </form>
+        } @else {
+          <div class="user-identity">
+            <strong>{{ user.name }}</strong>
+            <span>{{ user.email }}</span>
+          </div>
+          <div class="user-meta">
+            @if (user.isAdmin) { <span class="admin-badge">Beheerder</span> }
+            <span>Aangemaakt {{ user.createdAt | date: 'd MMM y' }}</span>
+          </div>
+          <div class="actions">
+            <button type="button" class="secondary" (click)="startEdit(user)">Bewerken</button>
+            <button type="button" class="danger" (click)="delete(user)">Verwijderen</button>
+          </div>
+        }
+      </article>
+    } @empty {
+      <p>Er zijn geen gebruikers gevonden.</p>
+    }
+  </section>
+</div>
