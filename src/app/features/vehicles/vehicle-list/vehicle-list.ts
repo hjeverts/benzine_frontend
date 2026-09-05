@@ -1,7 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { VehicleService } from '../../../core/services/vehicle';
 import { AuthService } from '../../../core/services/auth';
 import { Vehicle, VehicleRequest } from '../../../core/models/models';
@@ -22,6 +22,7 @@ export class VehicleList implements OnInit {
   constructor(
     private vehicleService: VehicleService,
     readonly authService: AuthService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -47,5 +48,6 @@ export class VehicleList implements OnInit {
 
   logout(): void {
     this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
