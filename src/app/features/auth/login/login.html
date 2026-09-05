@@ -1,6 +1,10 @@
 <div class="auth-container">
   <h1>Inloggen</h1>
 
+  @if (message()) {
+    <p class="message">{{ message() }}</p>
+  }
+
   <form (ngSubmit)="submit()" #loginForm="ngForm">
     <label>
       E-mailadres
@@ -11,6 +15,8 @@
       Wachtwoord
       <input type="password" name="password" [(ngModel)]="password" required autocomplete="current-password" />
     </label>
+
+    <a class="password-reset-link" routerLink="/password-reset">Wachtwoord vergeten?</a>
 
     @if (error()) {
       <p class="error">{{ error() }}</p>

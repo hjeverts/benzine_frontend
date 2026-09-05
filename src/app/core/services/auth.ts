@@ -54,6 +54,18 @@ export class AuthService {
     return this.http.put<void>(`${environment.apiUrl}/auth/profile/password`, { currentPassword, newPassword });
   }
 
+  requestPasswordReset(email: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/password-reset`, { email });
+  }
+
+  resetPassword(email: string, token: string, newPassword: string): Observable<void> {
+    return this.http.post<void>(`${environment.apiUrl}/auth/password-reset/confirm`, {
+      email,
+      token,
+      newPassword,
+    });
+  }
+
   updateAvatar(file: File): Observable<ProfileResponse> {
     const formData = new FormData();
     formData.append('file', file);
