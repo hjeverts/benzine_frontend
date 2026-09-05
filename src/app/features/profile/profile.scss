@@ -1,8 +1,13 @@
-section { margin: 1.5rem 0; }
-form { display: flex; flex-direction: column; gap: .75rem; max-width: 24rem; }
-label { display: flex; flex-direction: column; gap: .25rem; }
-input { padding: .4rem; font-size: 1rem; }
-button { align-self: flex-start; padding: .5rem .75rem; }
-.avatar { display: block; width: 8rem; height: 8rem; margin-bottom: .75rem; border-radius: 50%; object-fit: cover; }
-.message { color: #087443; }
-.error { color: #c0392b; }
+.page form {
+  max-width: 28rem;
+}
+
+.avatar {
+  display: block;
+  width: 8rem;
+  height: 8rem;
+  margin-bottom: 1rem;
+  border: 4px solid #e1f3ef;
+  border-radius: 50%;
+  object-fit: cover;
+}
