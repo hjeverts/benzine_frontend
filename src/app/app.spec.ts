@@ -14,10 +14,16 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render copyright, license, and repository links', async () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, benzine-frontend');
+    const footer = compiled.querySelector('.app-footer');
+
+    expect(footer?.textContent).toContain('© 2026 Hans Everts');
+    expect(footer?.textContent).toContain('MIT-licentie');
+    expect(footer?.textContent).toContain('Broncode op GitHub');
+    expect(footer?.querySelector('a[href="https://github.com/hjeverts/benzine_frontend/blob/main/LICENSE"]')).toBeTruthy();
+    expect(footer?.querySelector('a[href="https://github.com/hjeverts/benzine_frontend"]')).toBeTruthy();
   });
 });
