@@ -101,6 +101,78 @@
   object-fit: cover;
 }
 
+.attachments-cell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.attachment-chip {
+  position: relative;
+  display: inline-flex;
+}
+
+.attachment-open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  padding: 0;
+  background: var(--canvas);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pdf-icon {
+    color: var(--muted);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+  }
+}
+
+.attachment-delete {
+  position: absolute;
+  top: -0.4rem;
+  right: -0.4rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 999px;
+  padding: 0;
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+.attachment-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px dashed var(--line);
+  border-radius: 0.5rem;
+  color: var(--muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+
+  input[type='file'] {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    position: absolute;
+  }
+}
+
 .share-list {
   list-style: none;
   padding: 0;

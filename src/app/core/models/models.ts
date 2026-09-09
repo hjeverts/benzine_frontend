@@ -39,6 +39,14 @@ export interface MaintenanceType {
   naam: string;
 }
 
+export interface MaintenanceAttachment {
+  id: number;
+  fileName: string;
+  contentType: string;
+  isImage: boolean;
+  thumbnailDataUrl?: string;
+}
+
 export interface MaintenanceEntry {
   id: number;
   vehicleId: number;
@@ -47,11 +55,12 @@ export interface MaintenanceEntry {
   maintenanceTypeId: number;
   maintenanceTypeNaam: string;
   notitie?: string;
+  attachments: MaintenanceAttachment[];
 }
 
 export type MaintenanceEntryRequest = Omit<
   MaintenanceEntry,
-  'id' | 'vehicleId' | 'maintenanceTypeNaam'
+  'id' | 'vehicleId' | 'maintenanceTypeNaam' | 'attachments'
 >;
 
 export interface VehicleStats {

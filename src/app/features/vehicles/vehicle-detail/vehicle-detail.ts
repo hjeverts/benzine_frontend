@@ -110,6 +110,10 @@ export class VehicleDetail implements OnInit {
   };
   readonly maintenanceEntries = signal<MaintenanceEntry[]>([]);
   readonly maintenanceTypes = signal<MaintenanceType[]>([]);
+  readonly showNewTypeForm = signal(false);
+  readonly maintenanceTypeError = signal<string | null>(null);
+  readonly maintenanceAttachmentError = signal<string | null>(null);
+  newTypeName = '';
   readonly shares = signal<VehicleShare[]>([]);
   readonly shareError = signal<string | null>(null);
   readonly vehicleError = signal<string | null>(null);
@@ -200,6 +204,47 @@ export class VehicleDetail implements OnInit {
 
   deleteMaintenanceEntry(id: number): void {
     this.maintenanceService.delete(this.vehicleId, id).subscribe(() => this.load());
+  }
+
+  addMaintenanceType(): void {
+    const naam = this.newTypeName.trim();
+    if (!naam) return;
+    this.maintenanceTypeError.set(null);
+    this.maintenanceService.createType(naam).subscribe({
+      next: (type) => {
+        this.maintenanceTypes.update((types) => [...types, type].sort((a, b) => a.naam.localeCompare(b.naam)));
+        this.newMaintenanceEntry.maintenanceTypeId = type.id;
+        this.newTypeName = '';
+        this.showNewTypeForm.set(false);
+      },
+      error: (err) => this.maintenanceTypeError.set(err?.error ?? 'Onderhoudstype toevoegen mislukt.'),
+    });
+  }
+
+  uploadMaintenanceAttachment(entryId: number, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.maintenanceAttachmentError.set(null);
+    this.maintenanceService.uploadAttachment(this.vehicleId, entryId, file).subscribe({
+      next: () => {
+        input.value = '';
+        this.load();
+      },
+      error: (err) => this.maintenanceAttachmentError.set(err?.error ?? 'Bijlage uploaden mislukt.'),
+    });
+  }
+
+  deleteMaintenanceAttachment(entryId: number, attachmentId: number): void {
+    this.maintenanceService.deleteAttachment(this.vehicleId, entryId, attachmentId).subscribe(() => this.load());
+  }
+
+  openMaintenanceAttachment(entryId: number, attachmentId: number): void {
+    this.maintenanceService.downloadAttachment(this.vehicleId, entryId, attachmentId).subscribe((blob) => {
+      const url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 60_000);
+    });
   }
 
   addShare(): void {

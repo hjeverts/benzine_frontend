@@ -137,17 +137,32 @@
             <option [value]="type.id">{{ type.naam }}</option>
           }
         </select>
+        <button type="button" (click)="showNewTypeForm.set(true)">+ Nieuw type</button>
       </label>
+      @if (showNewTypeForm()) {
+        <label>
+          <span>Nieuw type</span>
+          <input type="text" name="newTypeName" [(ngModel)]="newTypeName" [ngModelOptions]="{ standalone: true }" />
+        </label>
+        <button type="button" (click)="addMaintenanceType()">Type toevoegen</button>
+        <button type="button" (click)="showNewTypeForm.set(false)">Annuleren</button>
+      }
       <label>
         <span>Notitie</span>
         <input type="text" name="notitie" [(ngModel)]="newMaintenanceEntry.notitie" />
       </label>
       <button type="submit">Toevoegen</button>
     </form>
+    @if (maintenanceTypeError(); as error) {
+      <p class="error">{{ error }}</p>
+    }
+    @if (maintenanceAttachmentError(); as error) {
+      <p class="error">{{ error }}</p>
+    }
 
     <table>
       <thead>
-        <tr><th>Datum</th><th>Km-stand</th><th>Type</th><th>Notitie</th><th></th></tr>
+        <tr><th>Datum</th><th>Km-stand</th><th>Type</th><th>Notitie</th><th>Bijlagen (foto's, facturen)</th><th></th></tr>
       </thead>
       <tbody>
         @for (entry of maintenanceEntries(); track entry.id) {
@@ -156,6 +171,38 @@
             <td>{{ entry.odometer }}</td>
             <td>{{ entry.maintenanceTypeNaam }}</td>
             <td>{{ entry.notitie }}</td>
+            <td class="attachments-cell">
+              @for (attachment of entry.attachments; track attachment.id) {
+                <span class="attachment-chip">
+                  <button
+                    type="button"
+                    class="attachment-open"
+                    (click)="openMaintenanceAttachment(entry.id, attachment.id)"
+                    [title]="attachment.fileName"
+                  >
+                    @if (attachment.isImage) {
+                      <img [src]="attachment.thumbnailDataUrl" [alt]="attachment.fileName" />
+                    } @else {
+                      <span class="pdf-icon">PDF</span>
+                    }
+                  </button>
+                  <button
+                    type="button"
+                    class="attachment-delete"
+                    (click)="deleteMaintenanceAttachment(entry.id, attachment.id)"
+                    title="Verwijderen"
+                  >×</button>
+                </span>
+              }
+              <label class="attachment-upload">
+                +
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,application/pdf"
+                  (change)="uploadMaintenanceAttachment(entry.id, $event)"
+                />
+              </label>
+            </td>
             <td><button (click)="deleteMaintenanceEntry(entry.id)">×</button></td>
           </tr>
         }
