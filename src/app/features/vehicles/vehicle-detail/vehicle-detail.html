@@ -7,24 +7,39 @@
   }
   @if (v.isOwner) {
     <section class="vehicle-settings">
-      <h2>Voertuiggegevens</h2>
       @if (v.fotoDataUrl; as photo) {
         <img class="vehicle-photo" [src]="photo" [alt]="'Foto van ' + v.naam" />
       }
-      <label>Voertuigfoto <input type="file" accept="image/jpeg,image/png,image/webp" (change)="uploadVehiclePhoto($event)" /></label>
-      <p>JPEG, PNG of WebP, maximaal 2 MB.</p>
-      <form (ngSubmit)="saveVehicle()" class="entry-form">
-        <label><span>Naam</span><input name="vehicleName" [(ngModel)]="editVehicle.naam" required /></label>
-        <label><span>Merk</span><input name="vehicleBrand" [(ngModel)]="editVehicle.merk" /></label>
-        <label><span>Type</span><input name="vehicleType" [(ngModel)]="editVehicle.type" /></label>
-        <label><span>Bouwjaar</span><input type="number" name="vehicleYear" [(ngModel)]="editVehicle.bouwjaar" /></label>
-        <label><span>Aankoopdatum</span><input type="date" name="vehiclePurchaseDate" [(ngModel)]="editVehicle.aankoopdatum" /></label>
-        <button type="submit">Opslaan</button>
-      </form>
+      @if (!editingVehicle()) {
+        <dl class="vehicle-summary">
+          @if (v.bouwjaar) { <div><dt>Bouwjaar</dt><dd>{{ v.bouwjaar }}</dd></div> }
+          @if (v.aankoopdatum) { <div><dt>Aankoopdatum</dt><dd>{{ v.aankoopdatum }}</dd></div> }
+        </dl>
+        <button type="button" (click)="editVehicleForm()">Voertuiggegevens bewerken</button>
+      } @else {
+        <label>Voertuigfoto <input type="file" accept="image/jpeg,image/png,image/webp" (change)="uploadVehiclePhoto($event)" /></label>
+        <p>JPEG, PNG of WebP, maximaal 2 MB.</p>
+        <form (ngSubmit)="saveVehicle()" class="entry-form">
+          <label><span>Naam</span><input name="vehicleName" [(ngModel)]="editVehicle.naam" required /></label>
+          <label><span>Merk</span><input name="vehicleBrand" [(ngModel)]="editVehicle.merk" /></label>
+          <label><span>Type</span><input name="vehicleType" [(ngModel)]="editVehicle.type" /></label>
+          <label><span>Bouwjaar</span><input type="number" name="vehicleYear" [(ngModel)]="editVehicle.bouwjaar" /></label>
+          <label><span>Aankoopdatum</span><input type="date" name="vehiclePurchaseDate" [(ngModel)]="editVehicle.aankoopdatum" /></label>
+          <button type="submit">Opslaan</button>
+          <button type="button" (click)="cancelEditVehicle()">Annuleren</button>
+        </form>
+      }
       @if (vehicleMessage(); as text) { <p class="message">{{ text }}</p> }
       @if (vehicleError(); as text) { <p class="error">{{ text }}</p> }
     </section>
   }
+
+  <nav class="tabs">
+    <button type="button" [class.active]="activeTab() === 'brandstof'" (click)="activeTab.set('brandstof')">Brandstof</button>
+    <button type="button" [class.active]="activeTab() === 'onderhoud'" (click)="activeTab.set('onderhoud')">Onderhoud</button>
+  </nav>
+
+  @if (activeTab() === 'brandstof') {
 
   @if (stats(); as s) {
     <section class="stats">
@@ -101,7 +116,7 @@
         <tr><th>Datum</th><th>Km-stand</th><th>Brandstoftype</th><th>Liters</th><th>Bedrag</th><th>Afstand (km)</th><th>L/100km</th><th>Tankstation</th><th></th></tr>
       </thead>
       <tbody>
-        @for (entry of fuelEntriesWithVerbruik(); track entry.id) {
+        @for (entry of visibleFuelEntries(); track entry.id) {
           <tr>
             <td>{{ entry.datum }}</td>
             <td>{{ entry.odometer }}</td>
@@ -116,8 +131,15 @@
         }
       </tbody>
     </table>
+    @if (fuelEntriesWithVerbruik().length > visibleEntryCount) {
+      <button type="button" class="show-more" (click)="showAllFuelEntries.set(!showAllFuelEntries())">
+        {{ showAllFuelEntries() ? 'Toon minder' : 'Toon alle ' + fuelEntriesWithVerbruik().length + ' tankbeurten' }}
+      </button>
+    }
   </section>
+  }
 
+  @if (activeTab() === 'onderhoud') {
   <section>
     <h2>Onderhoud</h2>
     <form (ngSubmit)="addMaintenanceEntry()" class="entry-form">
@@ -165,7 +187,7 @@
         <tr><th>Datum</th><th>Km-stand</th><th>Type</th><th>Notitie</th><th>Bijlagen (foto's, facturen)</th><th></th></tr>
       </thead>
       <tbody>
-        @for (entry of maintenanceEntries(); track entry.id) {
+        @for (entry of visibleMaintenanceEntries(); track entry.id) {
           <tr>
             <td>{{ entry.datum }}</td>
             <td>{{ entry.odometer }}</td>
@@ -208,7 +230,13 @@
         }
       </tbody>
     </table>
+    @if (maintenanceEntries().length > visibleEntryCount) {
+      <button type="button" class="show-more" (click)="showAllMaintenanceEntries.set(!showAllMaintenanceEntries())">
+        {{ showAllMaintenanceEntries() ? 'Toon minder' : 'Toon alle ' + maintenanceEntries().length + ' onderhoudsregels' }}
+      </button>
+    }
   </section>
+  }
 
   @if (v.isOwner) {
     <section>

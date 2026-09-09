@@ -121,6 +121,22 @@ export class VehicleDetail implements OnInit {
   newShareEmail = '';
   editVehicle: VehicleRequest = { naam: '', merk: '', type: '', bouwjaar: undefined, aankoopdatum: undefined };
 
+  readonly activeTab = signal<'brandstof' | 'onderhoud'>('brandstof');
+  readonly editingVehicle = signal(false);
+  readonly showAllFuelEntries = signal(false);
+  readonly showAllMaintenanceEntries = signal(false);
+  readonly visibleEntryCount = 10;
+  readonly visibleFuelEntries = computed(() =>
+    this.showAllFuelEntries()
+      ? this.fuelEntriesWithVerbruik()
+      : this.fuelEntriesWithVerbruik().slice(0, this.visibleEntryCount),
+  );
+  readonly visibleMaintenanceEntries = computed(() =>
+    this.showAllMaintenanceEntries()
+      ? this.maintenanceEntries()
+      : this.maintenanceEntries().slice(0, this.visibleEntryCount),
+  );
+
   newFuelEntry: FuelEntryRequest = {
     datum: new Date().toISOString().slice(0, 10),
     odometer: 0,
@@ -267,12 +283,32 @@ export class VehicleDetail implements OnInit {
     });
   }
 
+  editVehicleForm(): void {
+    const v = this.vehicle();
+    if (!v) return;
+    this.editVehicle = {
+      naam: v.naam,
+      merk: v.merk ?? '',
+      type: v.type ?? '',
+      bouwjaar: v.bouwjaar,
+      aankoopdatum: v.aankoopdatum,
+    };
+    this.vehicleError.set(null);
+    this.vehicleMessage.set(null);
+    this.editingVehicle.set(true);
+  }
+
+  cancelEditVehicle(): void {
+    this.editingVehicle.set(false);
+  }
+
   saveVehicle(): void {
     this.vehicleError.set(null);
     this.vehicleMessage.set(null);
     this.vehicleService.update(this.vehicleId, this.editVehicle).subscribe({
       next: () => {
         this.vehicleMessage.set('Voertuiggegevens opgeslagen.');
+        this.editingVehicle.set(false);
         this.load();
       },
       error: (err) => this.vehicleError.set(err.error ?? 'Voertuiggegevens opslaan mislukt.'),
