@@ -18,7 +18,7 @@
     @for (vehicle of vehicles(); track vehicle.id) {
       <li class="vehicle-card">
         <a [routerLink]="['/vehicles', vehicle.id]">
-          @if (vehicle.fotoDataUrl; as photo) {
+          @if (vehicle.fotoThumbnailDataUrl; as photo) {
             <img class="vehicle-photo" [src]="photo" [alt]="'Foto van ' + vehicle.naam" />
           }
           <h3>{{ vehicle.naam }}</h3>
