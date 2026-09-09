@@ -23,7 +23,7 @@ describe('App', () => {
     expect(footer?.textContent).toContain('© 2026 Hans Everts');
     expect(footer?.textContent).toContain('MIT-licentie');
     expect(footer?.textContent).toContain('Broncode op GitHub');
-    expect(footer?.querySelector('a[href="https://github.com/hjeverts/benzine_frontend/blob/main/LICENSE"]')).toBeTruthy();
-    expect(footer?.querySelector('a[href="https://github.com/hjeverts/benzine_frontend"]')).toBeTruthy();
+    expect(footer?.querySelector('a[href="https://github.com/hjeverts/vehictory_frontend/blob/main/LICENSE"]')).toBeTruthy();
+    expect(footer?.querySelector('a[href="https://github.com/hjeverts/vehictory_frontend"]')).toBeTruthy();
   });
 });

@@ -6,7 +6,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "benzine-frontend": {
+    "vehictory-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -65,10 +65,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "benzine-frontend:build:production"
+              "buildTarget": "vehictory-frontend:build:production"
             },
             "development": {
-              "buildTarget": "benzine-frontend:build:development"
+              "buildTarget": "vehictory-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

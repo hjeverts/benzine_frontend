@@ -20,8 +20,8 @@ export interface CurrentUser {
 
 export interface ProfileResponse extends CurrentUser {}
 
-const TOKEN_KEY = 'benzine_token';
-const USER_KEY = 'benzine_user';
+const TOKEN_KEY = 'vehictory_token';
+const USER_KEY = 'vehictory_user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
