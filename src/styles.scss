@@ -174,7 +174,9 @@ h2 {
   width: 2.75rem;
   height: 2.75rem;
   margin-bottom: 1.5rem;
-  content: url('/icons/icon-192.png');
+  border-radius: 0.8rem;
+  background: url('/icons/icon-192.png') center / cover no-repeat;
+  content: '';
 }
 
 .auth-container h1 {
