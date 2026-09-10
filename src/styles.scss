@@ -6,9 +6,9 @@
   --surface: #ffffff;
   --canvas: #f4f7f8;
   --line: #dde5e8;
-  --primary: #006b5e;
-  --primary-dark: #005247;
-  --primary-soft: #e1f3ef;
+  --primary: #0f3e28;
+  --primary-dark: #092a1b;
+  --primary-soft: #e8f2ed;
   --danger: #c63445;
   --danger-soft: #fff0f1;
   --shadow: 0 12px 30px rgb(23 32 51 / 8%);
@@ -22,7 +22,7 @@ body {
   min-width: 20rem;
   margin: 0;
   background:
-    radial-gradient(circle at top right, rgb(126 211 189 / 18%), transparent 30rem),
+    radial-gradient(circle at top right, rgb(126 211 171 / 18%), transparent 30rem),
     var(--canvas);
   color: var(--ink);
   font-family: 'DM Sans', Arial, sans-serif;
@@ -170,22 +170,21 @@ h2 {
 }
 
 .auth-container::before {
-  display: grid;
+  display: block;
   width: 2.75rem;
   height: 2.75rem;
-  place-items: center;
   margin-bottom: 1.5rem;
-  border-radius: 0.8rem;
-  background: var(--primary);
-  color: #fff;
-  content: 'B';
-  font-family: 'Space Grotesk', sans-serif;
-  font-size: 1.3rem;
-  font-weight: 700;
+  content: url('/icons/icon-192.png');
 }
 
 .auth-container h1 {
   margin-bottom: 0.4rem;
+}
+
+.auth-container .subtitle {
+  margin: 0 0 1.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .auth-container form,
